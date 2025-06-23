@@ -19,17 +19,17 @@
     }
   ],
   "paths": {
-    "/plants": {
+    "/admin/data/parcels": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "description": "Returns all parcels",
         "parameters": [
           {
-            "name": "limit",
+            "name": "county_id",
             "in": "query",
-            "description": "The maximum number of results to return",
+            "description": "county_id to filter by",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
