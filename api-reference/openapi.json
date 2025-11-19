@@ -1,1622 +1,336 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
-    "title": "Admin Data API",
-    "description": "API for managing counties, parcels, states, organizations, and files",
-    "version": "1.0.0",
-    "contact": {
-      "name": "API Support"
-    }
+    "version": "1.0",
+    "title": "app"
   },
   "servers": [
     {
-      "url": "https://api.example.com",
-      "description": "Production server"
+      "url": "http://localhost:3000"
     }
   ],
   "paths": {
-    "/v1/admin/data/counties": {
+    "/users/{userId}": {
       "get": {
-        "tags": ["Counties"],
-        "summary": "Get all counties",
-        "description": "Returns all counties, optionally filtered by state",
+        "summary": "Get User Info by User ID",
+        "description": "Retrieve the information of the user with the matching user ID.",
+        "operationId": "get-users-userId",
         "parameters": [
           {
-            "name": "state_id",
-            "in": "query",
-            "description": "Filter counties by state ID",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of counties",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/County"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Counties"],
-        "summary": "Delete all counties",
-        "description": "Deletes all counties, optionally filtered by state",
-        "parameters": [
-          {
-            "name": "state_id",
-            "in": "query",
-            "description": "Delete counties by state ID",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Counties deleted successfully"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "post": {
-        "tags": ["Counties"],
-        "summary": "Add a county",
-        "description": "Creates a new county",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CountyInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "County created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/County"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/counties/{county_id}": {
-      "get": {
-        "tags": ["Counties"],
-        "summary": "Get a county",
-        "description": "Returns a specific county by ID",
-        "parameters": [
-          {
-            "name": "county_id",
+            "name": "userId",
             "in": "path",
+            "description": "Id of an existing user.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "County details",
+            "description": "User Found",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/County"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "put": {
-        "tags": ["Counties"],
-        "summary": "Update a county",
-        "description": "Updates a specific county",
-        "parameters": [
-          {
-            "name": "county_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CountyInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "County updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/County"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Counties"],
-        "summary": "Delete a county",
-        "description": "Deletes a specific county",
-        "parameters": [
-          {
-            "name": "county_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "County deleted successfully"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/parcels": {
-      "get": {
-        "tags": ["Parcels"],
-        "summary": "Get all parcels",
-        "description": "Returns all parcels, optionally filtered by county or state",
-        "parameters": [
-          {
-            "name": "county_id",
-            "in": "query",
-            "description": "Filter parcels by county ID",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "state_id",
-            "in": "query",
-            "description": "Filter parcels by state ID",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of parcels",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Parcel"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Parcels"],
-        "summary": "Delete all parcels",
-        "description": "Deletes all parcels, optionally filtered by county or state",
-        "parameters": [
-          {
-            "name": "county_id",
-            "in": "query",
-            "description": "Delete parcels by county ID",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "state_id",
-            "in": "query",
-            "description": "Delete parcels by state ID",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Parcels deleted successfully"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "post": {
-        "tags": ["Parcels"],
-        "summary": "Add a parcel",
-        "description": "Creates a new parcel",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ParcelInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Parcel created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Parcel"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/parcels/{parcel_id}": {
-      "get": {
-        "tags": ["Parcels"],
-        "summary": "Get a parcel",
-        "description": "Returns a specific parcel by ID",
-        "parameters": [
-          {
-            "name": "parcel_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Parcel details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Parcel"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "put": {
-        "tags": ["Parcels"],
-        "summary": "Update a parcel",
-        "description": "Updates a specific parcel",
-        "parameters": [
-          {
-            "name": "parcel_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ParcelInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Parcel updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Parcel"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Parcels"],
-        "summary": "Delete a parcel",
-        "description": "Deletes a specific parcel",
-        "parameters": [
-          {
-            "name": "parcel_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Parcel deleted successfully"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/states": {
-      "get": {
-        "tags": ["States"],
-        "summary": "Get all states",
-        "description": "Returns all states",
-        "responses": {
-          "200": {
-            "description": "List of states",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/State"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": ["States"],
-        "summary": "Delete all states",
-        "description": "Deletes all states",
-        "responses": {
-          "204": {
-            "description": "States deleted successfully"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "post": {
-        "tags": ["States"],
-        "summary": "Add a state",
-        "description": "Creates a new state",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StateInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "State created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/State"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/states/{state_id}": {
-      "get": {
-        "tags": ["States"],
-        "summary": "Get a state",
-        "description": "Returns a specific state by ID",
-        "parameters": [
-          {
-            "name": "state_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "State details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/State"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "put": {
-        "tags": ["States"],
-        "summary": "Update a state",
-        "description": "Updates a specific state",
-        "parameters": [
-          {
-            "name": "state_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StateInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "State updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/State"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": ["States"],
-        "summary": "Delete a state",
-        "description": "Deletes a specific state",
-        "parameters": [
-          {
-            "name": "state_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "State deleted successfully"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/organizations": {
-      "get": {
-        "tags": ["Organizations"],
-        "summary": "Get all organizations",
-        "description": "Returns all organizations",
-        "responses": {
-          "200": {
-            "description": "List of organizations",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Organization"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "post": {
-        "tags": ["Organizations"],
-        "summary": "Add an organization",
-        "description": "Creates a new organization",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OrganizationInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Organization created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Organization"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/organizations/{org_id}": {
-      "get": {
-        "tags": ["Organizations"],
-        "summary": "Get an organization",
-        "description": "Returns a specific organization by ID",
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Organization details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Organization"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "put": {
-        "tags": ["Organizations"],
-        "summary": "Update an organization",
-        "description": "Updates a specific organization",
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OrganizationInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Organization updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Organization"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Organizations"],
-        "summary": "Delete an organization",
-        "description": "Deletes a specific organization",
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Organization deleted successfully"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/files": {
-      "post": {
-        "tags": ["Files"],
-        "summary": "Add a file",
-        "description": "Creates a new file",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FileInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "File created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/File"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/files/upload-url": {
-      "post": {
-        "tags": ["Files"],
-        "summary": "Get presigned upload URL",
-        "description": "Returns a presigned URL for file upload",
-        "parameters": [
-          {
-            "name": "key",
-            "in": "query",
-            "required": true,
-            "description": "S3 object key for the file",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "content_type",
-            "in": "query",
-            "required": true,
-            "description": "Content type of the file",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Presigned URL generated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PresignedUrl"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/files/{file_id}": {
-      "get": {
-        "tags": ["Files"],
-        "summary": "Get file info",
-        "description": "Returns information about a specific file",
-        "parameters": [
-          {
-            "name": "file_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "File information",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/File"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/files/{file_id}/jobs": {
-      "get": {
-        "tags": ["Files"],
-        "summary": "Get all jobs for a file",
-        "description": "Returns all jobs associated with a file",
-        "parameters": [
-          {
-            "name": "file_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of jobs",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Job"
+                  "$ref": "#/components/schemas/User"
+                },
+                "examples": {
+                  "Get User Alice Smith": {
+                    "value": {
+                      "id": 142,
+                      "firstName": "Alice",
+                      "lastName": "Smith",
+                      "email": "alice.smith@gmail.com",
+                      "dateOfBirth": "1997-10-31",
+                      "emailVerified": true,
+                      "signUpDate": "2019-08-24"
+                    }
                   }
                 }
               }
             }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "User Not Found"
           }
-        }
+        },
+        "servers": [
+          {
+            "url": "http://localhost:3000"
+          }
+        ]
       },
-      "post": {
-        "tags": ["Files"],
-        "summary": "Create a job",
-        "description": "Creates a new job for a file",
+      "patch": {
+        "summary": "Update User Information",
+        "description": "Update the information of an existing user.",
+        "operationId": "patch-users-userId",
         "parameters": [
           {
-            "name": "file_id",
+            "name": "userId",
             "in": "path",
+            "description": "Id of an existing user.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
         "requestBody": {
-          "required": true,
+          "description": "Patch user properties to update.",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobInput"
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "If a new email is given, the user's email verified property will be set to false."
+                  },
+                  "dateOfBirth": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "Update First Name": {
+                  "value": {
+                    "firstName": "Rebecca"
+                  }
+                },
+                "Update Email": {
+                  "value": {
+                    "email": "rebecca@gmail.com"
+                  }
+                },
+                "Update Last Name & Date of Birth": {
+                  "value": {
+                    "lastName": "Baker",
+                    "dateOfBirth": "1985-10-02"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": "Job created successfully",
+          "200": {
+            "description": "User Updated",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Job"
+                  "$ref": "#/components/schemas/User"
+                },
+                "examples": {
+                  "Updated User Rebecca Baker": {
+                    "value": {
+                      "id": 13,
+                      "firstName": "Rebecca",
+                      "lastName": "Baker",
+                      "email": "rebecca@gmail.com",
+                      "dateOfBirth": "1985-10-02",
+                      "emailVerified": false,
+                      "createDate": "2019-08-24"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User Not Found"
+          },
+          "409": {
+            "description": "Email Already Taken"
+          }
+        },
+        "servers": [
+          {
+            "url": "http://localhost:3000"
+          }
+        ]
+      }
+    },
+    "/user": {
+      "post": {
+        "summary": "Create New User",
+        "description": "Create a new user.",
+        "operationId": "post-user",
+        "requestBody": {
+          "description": "Post the necessary fields for the API to create a new user.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "dateOfBirth": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                },
+                "required": [
+                  "firstName",
+                  "lastName",
+                  "email",
+                  "dateOfBirth"
+                ]
+              },
+              "examples": {
+                "Create User Bob Fellow": {
+                  "value": {
+                    "firstName": "Bob",
+                    "lastName": "Fellow",
+                    "email": "bob.fellow@gmail.com",
+                    "dateOfBirth": "1996-08-24"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "examples": {
+                  "New User Bob Fellow": {
+                    "value": {
+                      "id": 12,
+                      "firstName": "Bob",
+                      "lastName": "Fellow",
+                      "email": "bob.fellow@gmail.com",
+                      "dateOfBirth": "1996-08-24",
+                      "emailVerified": false,
+                      "createDate": "2020-11-18"
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "Missing Required Information"
           },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
+          "409": {
+            "description": "Email Already Taken"
           }
-        }
+        },
+        "servers": [
+          {
+            "url": "http://localhost:3000"
+          }
+        ]
       }
     },
-    "/v1/admin/data/files/{file_id}/jobs/{job_id}": {
+    "/sites": {
       "get": {
-        "tags": ["Files"],
-        "summary": "Get a job",
-        "description": "Returns a specific job",
-        "parameters": [
+        "summary": "Your GET endpoint",
+        "operationId": "get-sites",
+        "responses": {},
+        "servers": [
           {
-            "name": "file_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "job_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "url": "http://localhost:3000"
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "Job details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Job"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "put": {
-        "tags": ["Files"],
-        "summary": "Update a job",
-        "description": "Updates a specific job",
-        "parameters": [
-          {
-            "name": "file_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "job_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JobInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Job updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Job"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
+        ]
       }
     },
-    "/v1/admin/data/files/{file_id}/extract/schema": {
-      "post": {
-        "tags": ["Files"],
-        "summary": "Extract file schema",
-        "description": "Extracts the schema from a file",
+    "/sites/{siteId}": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "operationId": "get-sites-siteId",
         "parameters": [
           {
-            "name": "file_id",
+            "name": "siteId",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "s3_uri",
-            "in": "query",
-            "required": true,
-            "description": "S3 URI of the file",
-            "schema": {
-              "type": "string"
-            }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Schema extracted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Schema"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/admin/data/files/{file_id}/convert": {
-      "post": {
-        "tags": ["Files"],
-        "summary": "Convert file",
-        "description": "Converts a file to a new format with desired schema",
-        "parameters": [
+        "responses": {},
+        "servers": [
           {
-            "name": "file_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "schema_map",
-            "in": "query",
-            "required": true,
-            "description": "Schema mapping configuration",
-            "schema": {
-              "type": "string"
-            }
+            "url": "http://localhost:3000"
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "File converted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConversionResult"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
+        ]
       }
     }
   },
   "components": {
     "schemas": {
-      "County": {
+      "User": {
         "type": "object",
+        "title": "User",
         "properties": {
           "id": {
-            "type": "string",
-            "description": "Unique identifier for the county"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the county"
-          },
-          "state_id": {
-            "type": "string",
-            "description": "ID of the state this county belongs to"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
-          }
-        },
-        "required": ["id", "name", "state_id"]
-      },
-      "CountyInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name of the county"
-          },
-          "state_id": {
-            "type": "string",
-            "description": "ID of the state this county belongs to"
-          }
-        },
-        "required": ["name", "state_id"]
-      },
-      "Parcel": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the parcel"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name or identifier of the parcel"
-          },
-          "county_id": {
-            "type": "string",
-            "description": "ID of the county this parcel belongs to"
-          },
-          "state_id": {
-            "type": "string",
-            "description": "ID of the state this parcel belongs to"
-          },
-          "area": {
-            "type": "number",
-            "format": "float",
-            "description": "Area of the parcel"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
-          }
-        },
-        "required": ["id", "name", "county_id", "state_id"]
-      },
-      "ParcelInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name or identifier of the parcel"
-          },
-          "county_id": {
-            "type": "string",
-            "description": "ID of the county this parcel belongs to"
-          },
-          "state_id": {
-            "type": "string",
-            "description": "ID of the state this parcel belongs to"
-          },
-          "area": {
-            "type": "number",
-            "format": "float",
-            "description": "Area of the parcel"
-          }
-        },
-        "required": ["name", "county_id", "state_id"]
-      },
-      "State": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the state"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the state"
-          },
-          "abbreviation": {
-            "type": "string",
-            "description": "State abbreviation (e.g., CA, NY)"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
-          }
-        },
-        "required": ["id", "name", "abbreviation"]
-      },
-      "StateInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name of the state"
-          },
-          "abbreviation": {
-            "type": "string",
-            "description": "State abbreviation (e.g., CA, NY)"
-          }
-        },
-        "required": ["name", "abbreviation"]
-      },
-      "Organization": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the organization"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the organization"
-          },
-          "type": {
-            "type": "string",
-            "description": "Type of organization"
-          },
-          "contact_info": {
-            "type": "object",
-            "description": "Contact information for the organization"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
-          }
-        },
-        "required": ["id", "name"]
-      },
-      "OrganizationInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name of the organization"
-          },
-          "type": {
-            "type": "string",
-            "description": "Type of organization"
-          },
-          "contact_info": {
-            "type": "object",
-            "description": "Contact information for the organization"
-          }
-        },
-        "required": ["name"]
-      },
-      "File": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the file"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the file"
-          },
-          "size": {
             "type": "integer",
-            "description": "Size of the file in bytes"
+            "description": "Unique identifier for the given user."
           },
-          "content_type": {
-            "type": "string",
-            "description": "MIME type of the file"
+          "firstName": {
+            "type": "string"
           },
-          "s3_uri": {
-            "type": "string",
-            "description": "S3 URI where the file is stored"
+          "lastName": {
+            "type": "string"
           },
-          "status": {
+          "email": {
             "type": "string",
-            "enum": ["uploaded", "processing", "processed", "error"],
-            "description": "Current status of the file"
+            "format": "email"
           },
-          "created_at": {
+          "dateOfBirth": {
             "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
+            "format": "date",
+            "examples": [
+              "1997-10-31"
+            ]
           },
-          "updated_at": {
+          "emailVerified": {
+            "type": "boolean",
+            "description": "Set to true if the user's email has been verified."
+          },
+          "createDate": {
             "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
+            "description": "The date that the user was created.",
+            "format": "date"
           }
         },
-        "required": ["id", "name", "content_type"]
-      },
-      "FileInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name of the file"
-          },
-          "content_type": {
-            "type": "string",
-            "description": "MIME type of the file"
-          },
-          "s3_uri": {
-            "type": "string",
-            "description": "S3 URI where the file is stored"
+        "required": [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "emailVerified"
+        ],
+        "examples": [
+          {
+            "id": 142,
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "email": "alice.smith@gmail.com",
+            "dateOfBirth": "1997-10-31",
+            "emailVerified": true,
+            "signUpDate": "2019-08-24"
           }
-        },
-        "required": ["name", "content_type"]
-      },
-      "Job": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the job"
-          },
-          "file_id": {
-            "type": "string",
-            "description": "ID of the associated file"
-          },
-          "type": {
-            "type": "string",
-            "description": "Type of job (e.g., extract, convert, validate)"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["pending", "running", "completed", "failed"],
-            "description": "Current status of the job"
-          },
-          "result": {
-            "type": "object",
-            "description": "Job result data"
-          },
-          "error_message": {
-            "type": "string",
-            "description": "Error message if job failed"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
-          }
-        },
-        "required": ["id", "file_id", "type", "status"]
-      },
-      "JobInput": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "Type of job (e.g., extract, convert, validate)"
-          },
-          "parameters": {
-            "type": "object",
-            "description": "Job-specific parameters"
-          }
-        },
-        "required": ["type"]
-      },
-      "PresignedUrl": {
-        "type": "object",
-        "properties": {
-          "upload_url": {
-            "type": "string",
-            "format": "uri",
-            "description": "Presigned URL for file upload"
-          },
-          "fields": {
-            "type": "object",
-            "description": "Additional form fields required for upload"
-          },
-          "expires_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "When the presigned URL expires"
-          }
-        },
-        "required": ["upload_url"]
-      },
-      "Schema": {
-        "type": "object",
-        "properties": {
-          "fields": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "type": {
-                  "type": "string"
-                },
-                "nullable": {
-                  "type": "boolean"
-                }
-              }
-            }
-          },
-          "metadata": {
-            "type": "object",
-            "description": "Additional schema metadata"
-          }
-        }
-      },
-      "ConversionResult": {
-        "type": "object",
-        "properties": {
-          "output_file_id": {
-            "type": "string",
-            "description": "ID of the converted file"
-          },
-          "conversion_summary": {
-            "type": "object",
-            "description": "Summary of the conversion process"
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Any errors encountered during conversion"
-          }
-        }
-      },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "string",
-            "description": "Error message"
-          },
-          "code": {
-            "type": "string",
-            "description": "Error code"
-          },
-          "details": {
-            "type": "object",
-            "description": "Additional error details"
-          }
-        },
-        "required": ["error"]
-      }
-    },
-    "responses": {
-      "BadRequest": {
-        "description": "Bad request",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/Error"
-            }
-          }
-        }
-      },
-      "NotFound": {
-        "description": "Resource not found",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/Error"
-            }
-          }
-        }
-      },
-      "InternalServerError": {
-        "description": "Internal server error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/Error"
-            }
-          }
-        }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+        ]
       }
     }
-  },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ]
+  }
 }
